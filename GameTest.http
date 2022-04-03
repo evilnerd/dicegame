@@ -1,0 +1,35 @@
+### Create Game
+POST http://{{host}}:{{port}}/game
+Content-Type: application/json
+
+{
+  "Players": ["Dick", "Lucy", "Janneke"]
+}
+> {%
+    client.test("Got a gamekey back", function() {
+        client.assert(response.body.Key != null)
+        client.assert(response.body.Key.length > 0)
+    });
+    client.global.set("gamekey", response.body.Key);
+    client.log("Saved 'gamekey': " + response.body.Key);
+%}
+
+###  Get Server state
+GET http://{{host}}:{{port}}/
+Accept: application/json
+
+### Get current turn info
+GET http://{{host}}:{{port}}/game/{{gamekey}}/turn
+
+### Throw for the current turn
+POST http://{{host}}:{{port}}/game/{{gamekey}}/throw
+
+### Pick a number
+
+POST http://{{host}}:{{port}}/game/{{gamekey}}/pick
+Content-Type: application/json
+
+{
+  "Pick": 5
+}
+
