@@ -1,3 +1,4 @@
+//go:generate stringer -type=Stage
 package model
 
 import "math/rand"
@@ -59,18 +60,24 @@ func (t *Turn) Throw(num int) Dice {
 		val := rand.Intn(6) + 1
 		d.Roll(val)
 	}
-	t.Stage = Thrown
 	t.LastThrow = d
+	if len(t.AllowedPicks()) > 0 {
+		t.Stage = Thrown
+	} else {
+		t.Stage = Invalid
+	}
 	return d
 }
 
 func (t *Turn) AllowedPicks() []int {
-	throw := t.LastThrow
-	taken := t.Used
 	allowed := make([]int, 0)
-	for i := 1; i <= 6; i++ {
-		if throw[i] > 0 && taken[i] == 0 {
-			allowed = append(allowed, i)
+	if t.LastThrow != nil {
+		throw := t.LastThrow
+		taken := t.Used
+		for i := 1; i <= 6; i++ {
+			if throw[i] > 0 && taken[i] == 0 {
+				allowed = append(allowed, i)
+			}
 		}
 	}
 	return allowed
@@ -82,4 +89,9 @@ func (t *Turn) Pick(number int) {
 	t.Remaining -= amount
 	t.Used[number] = amount
 	t.Stage = Picked
+	t.LastThrow = nil
+}
+
+func (t *Turn) Take(number int) {
+
 }

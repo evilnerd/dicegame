@@ -1,3 +1,7 @@
+###  Get Server state
+GET http://{{host}}:{{port}}/
+Accept: application/json
+
 ### Create Game
 POST http://{{host}}:{{port}}/game
 Content-Type: application/json
@@ -14,9 +18,11 @@ Content-Type: application/json
     client.log("Saved 'gamekey': " + response.body.Key);
 %}
 
-###  Get Server state
-GET http://{{host}}:{{port}}/
-Accept: application/json
+### Get Active Games
+GET http://{{host}}:{{port}}/games
+
+### Get Game info
+GET http://{{host}}:{{port}}/game/{{gamekey}}/info
 
 ### Get current turn info
 GET http://{{host}}:{{port}}/game/{{gamekey}}/turn
@@ -25,11 +31,13 @@ GET http://{{host}}:{{port}}/game/{{gamekey}}/turn
 POST http://{{host}}:{{port}}/game/{{gamekey}}/throw
 
 ### Pick a number
-
 POST http://{{host}}:{{port}}/game/{{gamekey}}/pick
 Content-Type: application/json
 
 {
-  "Pick": 5
+  "Pick": 4
 }
 
+### Start a new turn for the next player
+POST http://{{host}}:{{port}}/game/{{gamekey}}/nextplayer
+Content-Type: application/json
