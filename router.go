@@ -30,6 +30,7 @@ func CreateRouter() *mux.Router {
 	postRouter.HandleFunc("/game/{game}/throw", moves.Throw)
 	postRouter.HandleFunc("/game/{game}/pick", moves.Pick)
 	postRouter.HandleFunc("/game/{game}/nextplayer", games.NextPlayer)
+	postRouter.HandleFunc("/game/{game}/take", moves.Take)
 	postRouter.Use(handlers.MiddlewareValidateGame)
 
 	// Add another logrus instance as middle ware for request logging.

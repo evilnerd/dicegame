@@ -56,3 +56,24 @@ func (m *Moves) Pick(w http.ResponseWriter, r *http.Request) {
 	game.CurrentTurnInfo().Pick(req.Pick)
 	GenerateTurnStateResponse(w, game)
 }
+
+func (m *Moves) Take(w http.ResponseWriter, r *http.Request) {
+	game := r.Context().Value(GameKey{}).(*model.Game)
+
+	// Validate the game state first
+	if !game.CanTake() {
+		http.Error(w, "take is only allowed after a pick that resuls in a valid throw", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Validate and parse the incoming message
+	req, err := ParseRequestBody[messages.TakeTileRequest](r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	// Take the specfied tile and return the updated game state.
+	m.l.Printf("Game %s | Player %s | Taking Tile %d ", game.Key, game.CurrentTurnInfo().Player.Name, req.Tile)
+	game.Take(req.Tile)
+	GenerateGameStateResponse(w, game)
+}

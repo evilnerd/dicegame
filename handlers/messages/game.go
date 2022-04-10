@@ -14,6 +14,7 @@ type NewGameResponse struct {
 type GameStateResponse struct {
 	Players []PlayerStateResponse `json:"players"`
 	Tiles   []model.Tile          `json:"tiles"`
+	Stage   string                `json:"stage"`
 	Ended   bool                  `json:"ended"`
 }
 
@@ -28,6 +29,7 @@ func NewGameStateResponse(game *model.Game) GameStateResponse {
 	return GameStateResponse{
 		Players: getPlayerStateResponses(game),
 		Tiles:   game.Tiles,
+		Stage:   game.CurrentTurnInfo().Stage.String(),
 		Ended:   game.Ended(),
 	}
 }

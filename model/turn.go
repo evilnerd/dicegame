@@ -91,7 +91,3 @@ func (t *Turn) Pick(number int) {
 	t.Stage = Picked
 	t.LastThrow = nil
 }
-
-func (t *Turn) Take(number int) {
-
-}

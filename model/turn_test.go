@@ -29,20 +29,3 @@ func TestTurnThrow_SetsGameStage(t *testing.T) {
 
 	assert.Equal(t, Thrown, turn.Stage, "Expected the stage to be set to 'Thrown'")
 }
-
-func TestTurnThrow_Invalid(t *testing.T) {
-	// sets status
-	// returns player's last tile to the table
-
-}
-
-func TestTurn_TakeFromTable(t *testing.T) {
-	// sets status
-	// reduces tile from the table
-	// add tile to own stack
-}
-func TestTurn_TakeFromPlayer(t *testing.T) {
-	// sets status
-	// reduces tile from another player
-	// add tile to own stack
-}

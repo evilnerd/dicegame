@@ -110,3 +110,23 @@ func (g *Game) NextPlayer() *Turn {
 	g.currentTurn = NewTurn(p)
 	return g.currentTurn
 }
+
+func (g *Game) Take(number int) {
+	var tile Tile
+	if g.Tiles.Contains(number) {
+		// table pick
+		tile = g.Tiles.GetByValue(number)
+		g.Tiles = g.Tiles.Remove(number)
+	} else {
+		// check players
+		for _, p := range g.Players {
+			if p.Name != g.currentTurn.Name && p.Tiles.Peek().Value == number {
+				tile = p.Tiles.Pop()
+			}
+		}
+	}
+	if tile.Value != 0 {
+		g.currentTurn.Player.Tiles.Push(tile)
+		g.currentTurn.Stage = Taken
+	}
+}

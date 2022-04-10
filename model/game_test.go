@@ -78,3 +78,45 @@ func TestGame_AllowedTiles(t *testing.T) {
 	assert.Len(t, g.AllowedTiles(), 2, "Expected that both the highest matching tile from the stack and the one we can steal is included.")
 	assert.Contains(t, g.AllowedTiles(), NewTile(31, 3))
 }
+
+func TestGameThrow_Invalid(t *testing.T) {
+	// sets status
+	// returns player's last tile to the table
+
+}
+
+func TestGame_TakeFromTable(t *testing.T) {
+	// Arrange
+	game := getTestGame(t)
+	turn := game.CurrentTurnInfo()
+	turn.Stage = Picked
+	turn.Used = Dice{5: 2, 6: 3} // score = 25
+
+	// Act
+	game.Take(25)
+
+	// Assert
+	assert.Equal(t, Taken, turn.Stage, "Expected that the stage is set to 'Taken'")
+	assert.Len(t, game.Tiles, 15, "Expected that the 'table' tiles are reduced by 1 (16->15)")
+	assert.Equal(t, 1, turn.Player.Tiles.Size(), "Expected the current player to now have 1 tile")
+
+}
+func TestGame_TakeFromPlayer(t *testing.T) {
+	// Arrange
+	game := getTestGame(t)
+	turn := game.CurrentTurnInfo()
+	turn.Stage = Picked
+	turn.Used = Dice{5: 2, 6: 3} // score = 25
+
+	// make sure another player has tile 25, and it's no longer on the table.
+	game.Tiles.Remove(25)
+	game.Players[1].Tiles.Push(NewTile(25, 3))
+
+	// Act
+	game.Take(25)
+
+	// Assert
+	assert.Equal(t, Taken, turn.Stage, "Expected that the stage is set to 'Taken'")
+	assert.Equal(t, 0, game.Players[1].Tiles.Size(), "Expected that the player's tiles are reduced by 1 (1->0)")
+	assert.Equal(t, 1, turn.Player.Tiles.Size(), "Expected the current player to now have 1 tile")
+}

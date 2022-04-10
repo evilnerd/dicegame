@@ -23,6 +23,10 @@ type PickDiceRequest struct {
 	Pick int `json:"pick"`
 }
 
+type TakeTileRequest struct {
+	Tile int `json:"tile"`
+}
+
 func NewTurnStateResponse(game *model.Game) TurnStateResponse {
 	turnInfo := game.CurrentTurnInfo()
 

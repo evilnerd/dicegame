@@ -62,3 +62,21 @@ func (t Tiles) Remove(val int) Tiles {
 	}
 	return t
 }
+
+func (t Tiles) Contains(val int) bool {
+	for i := 0; i < len(t); i++ {
+		if t[i].Value == val {
+			return true
+		}
+	}
+	return false
+}
+
+func (t Tiles) GetByValue(val int) Tile {
+	for i := 0; i < len(t); i++ {
+		if t[i].Value == val {
+			return t[i]
+		}
+	}
+	return Tile{}
+}

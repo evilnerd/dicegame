@@ -35,7 +35,15 @@ POST http://{{host}}:{{port}}/game/{{gamekey}}/pick
 Content-Type: application/json
 
 {
-  "Pick": 4
+  "pick": 4
+}
+
+### Take a tile
+POST http://{{host}}:{{port}}/game/{{gamekey}}/take
+Content-Type: application/json
+
+{
+  "tile": 21
 }
 
 ### Start a new turn for the next player
