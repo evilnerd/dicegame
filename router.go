@@ -22,12 +22,15 @@ func CreateRouter() *mux.Router {
 	// get
 	getRouter := m.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/game/{game}/turn", games.GetTurnInfo)
+	getRouter.HandleFunc("/game/{game}/info", games.GetGameInfo)
 	getRouter.Use(handlers.MiddlewareValidateGame)
 
 	// post
 	postRouter := m.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/game/{game}/throw", moves.Throw)
 	postRouter.HandleFunc("/game/{game}/pick", moves.Pick)
+	postRouter.HandleFunc("/game/{game}/nextplayer", games.NextPlayer)
+	postRouter.HandleFunc("/game/{game}/take", moves.Take)
 	postRouter.Use(handlers.MiddlewareValidateGame)
 
 	// Add another logrus instance as middle ware for request logging.
