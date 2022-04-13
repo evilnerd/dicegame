@@ -111,7 +111,7 @@ func (g *Game) NextPlayer() *Turn {
 	return g.currentTurn
 }
 
-func (g *Game) Take(number int) {
+func (g *Game) Take(number int) error {
 	var tile Tile
 	if g.Tiles.Contains(number) {
 		// table pick
@@ -128,5 +128,8 @@ func (g *Game) Take(number int) {
 	if tile.Value != 0 {
 		g.currentTurn.Player.Tiles.Push(tile)
 		g.currentTurn.Stage = Taken
+	} else {
+		return fmt.Errorf("the specified tile (%d) is not available", number)
 	}
+	return nil
 }

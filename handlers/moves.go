@@ -72,8 +72,11 @@ func (m *Moves) Take(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	// Take the specfied tile and return the updated game state.
+	// Take the specified tile and return the updated game state.
 	m.l.Printf("Game %s | Player %s | Taking Tile %d ", game.Key, game.CurrentTurnInfo().Player.Name, req.Tile)
-	game.Take(req.Tile)
+	err = game.Take(req.Tile)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
 	GenerateGameStateResponse(w, game)
 }

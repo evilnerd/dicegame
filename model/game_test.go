@@ -120,3 +120,16 @@ func TestGame_TakeFromPlayer(t *testing.T) {
 	assert.Equal(t, 0, game.Players[1].Tiles.Size(), "Expected that the player's tiles are reduced by 1 (1->0)")
 	assert.Equal(t, 1, turn.Player.Tiles.Size(), "Expected the current player to now have 1 tile")
 }
+
+func TestGame_TakeInvalidNumber(t *testing.T) {
+	// Arrange
+	game := getTestGame(t)
+	turn := game.currentTurn
+	turn.Stage = Picked
+
+	// Act
+	err := game.Take(20)
+
+	// Assert
+	assert.Error(t, err, "Expected to get an error for an invalid tile.")
+}
