@@ -3,7 +3,6 @@ package handlers
 import (
 	"dice-game/handlers/messages"
 	"dice-game/model"
-	"encoding/json"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -13,6 +12,8 @@ type Games struct {
 	l *logrus.Logger
 	e *model.Engine
 }
+
+type GameKey struct{}
 
 func NewGames(logger *logrus.Logger, engine *model.Engine) *Games {
 	return &Games{
@@ -29,13 +30,7 @@ func (g *Games) GetInfo(w http.ResponseWriter, r *http.Request) {
 
 func (g *Games) GetGames(w http.ResponseWriter, r *http.Request) {
 	g.l.Println("Listing Games")
-	w.WriteHeader(http.StatusOK)
-	e := json.NewEncoder(w)
-	err := e.Encode(g.e.Games)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		g.l.Printf("Error encoding games: %v\n", err)
-	}
+	SerializeToResponse(g.e.Games, w)
 }
 
 func (g *Games) NewGame(w http.ResponseWriter, r *http.Request) {
@@ -55,24 +50,39 @@ func (g *Games) NewGame(w http.ResponseWriter, r *http.Request) {
 	SerializeToResponse(res, w)
 }
 
-func (g *Games) GetTurnInfo(w http.ResponseWriter, r *http.Request) {
+func (g *Games) NextPlayer(w http.ResponseWriter, r *http.Request) {
 	game := r.Context().Value(GameKey{}).(*model.Game)
-	turn := game.CurrentTurnInfo()
-
-	GenerateTurnStateResponse(w, turn)
+	if !game.CanNextPlayer() {
+		http.Error(w, "the current turn has not yet ended in either taking a tile or an invalid throw", http.StatusMethodNotAllowed)
+		return
+	}
+	// start a new turn for the next player
+	game.NextPlayer()
+	GenerateTurnStateResponse(w, game)
 }
 
-func GenerateTurnStateResponse(w http.ResponseWriter, turn *model.Turn) {
-	res := &messages.TurnStateResponse{
-		Player:   turn.Name,
-		Score:    turn.Score(),
-		HasWorms: turn.HasWorms(),
-		Taken:    messages.DiceFromModelDice(turn.Used),
-	}
+func (g *Games) GetTurnInfo(w http.ResponseWriter, r *http.Request) {
+	game := r.Context().Value(GameKey{}).(*model.Game)
+	GenerateTurnStateResponse(w, game)
+}
+
+func (g *Games) GetGameInfo(w http.ResponseWriter, r *http.Request) {
+	game := r.Context().Value(GameKey{}).(*model.Game)
+	GenerateGameStateResponse(w, game)
+}
+
+func GenerateTurnStateResponse(w http.ResponseWriter, game *model.Game) {
+	res := messages.NewTurnStateResponse(game)
 	err := SerializeToResponse(res, w)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error encoding result: %v", err), http.StatusInternalServerError)
 	}
 }
 
-type GameKey struct{}
+func GenerateGameStateResponse(w http.ResponseWriter, game *model.Game) {
+	res := messages.NewGameStateResponse(game)
+	err := SerializeToResponse(res, w)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("error encoding result: %v", err), http.StatusInternalServerError)
+	}
+}
