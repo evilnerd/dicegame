@@ -6,7 +6,7 @@ import (
 )
 
 func getTestGame(t *testing.T) *Game {
-	e := newEngine()
+	e := NewEngine()
 	game, err := e.NewGame([]string{"dick", "janneke", "lucy"})
 	if err != nil {
 		t.Fatalf("error creating test-game: %v", err)
@@ -132,4 +132,17 @@ func TestGame_TakeInvalidNumber(t *testing.T) {
 
 	// Assert
 	assert.Error(t, err, "Expected to get an error for an invalid tile.")
+}
+
+func TestGame_HandleInvalid(t *testing.T) {
+	// Arrange
+
+	// Act
+
+	// Assert
+
+	// Sets turn to invalid
+	// returns the top tile to the table
+	// flips the last tile on the table (flip = remove)
+
 }

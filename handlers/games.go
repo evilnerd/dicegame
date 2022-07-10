@@ -30,7 +30,7 @@ func (g *Games) GetInfo(w http.ResponseWriter, r *http.Request) {
 
 func (g *Games) GetGames(w http.ResponseWriter, r *http.Request) {
 	g.l.Println("Listing Games")
-	SerializeToResponse(g.e.Games, w)
+	SerializeToResponse(messages.GetGameInfoResponses(g.e), w)
 }
 
 func (g *Games) NewGame(w http.ResponseWriter, r *http.Request) {
@@ -44,9 +44,8 @@ func (g *Games) NewGame(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	res := &messages.NewGameResponse{
-		Key: game.Key,
-	}
+
+	res := messages.NewGameInfoResponse(game)
 	SerializeToResponse(res, w)
 }
 

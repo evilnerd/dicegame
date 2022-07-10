@@ -2,15 +2,14 @@ package messages
 
 import (
 	"dice-game/model"
+	"dice-game/util"
+	"time"
 )
 
 type NewGameRequest struct {
-	Players []string
+	Players []string `json:"players"`
 }
 
-type NewGameResponse struct {
-	Key string
-}
 type GameStateResponse struct {
 	Players []PlayerStateResponse `json:"players"`
 	Tiles   []model.Tile          `json:"tiles"`
@@ -18,10 +17,16 @@ type GameStateResponse struct {
 	Ended   bool                  `json:"ended"`
 }
 
+type GameInfoResponse struct {
+	Key     string    `json:"key"`
+	Players []string  `json:"players"`
+	Created time.Time `json:"created"`
+}
+
 type PlayerStateResponse struct {
-	Name      string      `json:"player-name"`
-	TopTile   *model.Tile `json:"top-tile,omitempty"`
-	GameWorms int         `json:"game-worms"`
+	Name      string      `json:"playerName"`
+	TopTile   *model.Tile `json:"topTile,omitempty"`
+	GameWorms int         `json:"gameWorms"`
 }
 
 func NewGameStateResponse(game *model.Game) GameStateResponse {
@@ -52,4 +57,20 @@ func newPlayerStateResponse(player *model.Player) PlayerStateResponse {
 		res.TopTile = &top
 	}
 	return res
+}
+
+func NewGameInfoResponse(game *model.Game) GameInfoResponse {
+	return GameInfoResponse{
+		Key:     game.Key,
+		Players: util.Map(game.Players, func(p *model.Player) string { return p.Name }),
+		Created: game.Created,
+	}
+}
+
+func GetGameInfoResponses(engine *model.Engine) []GameInfoResponse {
+	out := make([]GameInfoResponse, 0)
+	for _, g := range engine.Games {
+		out = append(out, NewGameInfoResponse(g))
+	}
+	return out
 }

@@ -25,6 +25,11 @@ func SerializeToResponse(in any, w http.ResponseWriter) error {
 	return e.Encode(in)
 }
 
+func AsJSON(in any) string {
+	b, _ := json.Marshal(in)
+	return string(b)
+}
+
 func MiddlewareValidateGame(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)

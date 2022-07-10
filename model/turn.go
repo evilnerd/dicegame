@@ -88,6 +88,12 @@ func (t *Turn) Pick(number int) {
 	amount := throw[number]
 	t.Remaining -= amount
 	t.Used[number] = amount
-	t.Stage = Picked
+
+	if t.HasWorms() || t.Remaining > 0 {
+		t.Stage = Picked
+	} else {
+		t.Stage = Invalid
+	}
+
 	t.LastThrow = nil
 }

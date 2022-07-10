@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	muxhandlers "github.com/gorilla/handlers"
 	"github.com/nicholasjackson/env"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -22,14 +23,20 @@ func main() {
 
 	// Create logger(s)
 	l = logrus.New()
-	//stdLog := log.New(l.Writer(), "game-server", log.LstdFlags)
 
-	m := CreateRouter()
+	r := CreateRouter()
+
+	// Add gorilla CORS handling
+	headersOk := muxhandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Origin"})
+	originsOk := muxhandlers.AllowedOrigins([]string{"*"})
+	methodsOk := muxhandlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
+	h := muxhandlers.CORS(headersOk, originsOk, methodsOk)(r)
 
 	// Create a new server
 	s := http.Server{
 		Addr:         *bindAddress,      // configure the bind address
-		Handler:      m,                 // set the default handler
+		Handler:      h,                 // set the default handler
 		ReadTimeout:  5 * time.Second,   // max time to read request from the client
 		WriteTimeout: 10 * time.Second,  // max time to write response to the client
 		IdleTimeout:  120 * time.Second, // max time for connections using TCP Keep-Alive

@@ -3,15 +3,16 @@ package model
 import "fmt"
 
 var (
-	E = newEngine()
+	E = NewEngine()
 )
 
 type Engine struct {
 	Games []*Game
 }
 
-// newEngine returns a new Engine. This is called only to initialize the global var E.
-func newEngine() *Engine {
+// NewEngine returns a new Engine. This is called only to initialize the global var E
+// and for tests.
+func NewEngine() *Engine {
 	return &Engine{
 		Games: make([]*Game, 0),
 	}
