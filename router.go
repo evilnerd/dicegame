@@ -35,5 +35,6 @@ func CreateRouter() *mux.Router {
 
 	// Add another logrus instance as middle ware for request logging.
 	m.Use(muxlogrus.NewLogger().Middleware)
+
 	return m
 }

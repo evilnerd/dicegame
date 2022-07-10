@@ -5,18 +5,18 @@ import (
 )
 
 type TurnStateResponse struct {
-	Player        string `json:"player-name"`
+	Player        string `json:"playerName"`
 	Score         int    `json:"score"`
-	HasWorms      bool   `json:"has-worms"`
+	HasWorms      bool   `json:"hasWorms"`
 	Taken         Dice   `json:"taken,omitempty"`
 	Stage         string `json:"stage"`
-	ThrowResponse `json:"throw-response,omitempty"`
+	ThrowResponse `json:"throwResponse,omitempty"`
 }
 
 type ThrowResponse struct {
 	Dice         Dice  `json:"dice,omitempty"`
-	AllowedPicks []int `json:"allowed-picks,omitempty"`
-	AllowedTiles []int `json:"allowed-tiles,omitempty"`
+	AllowedPicks []int `json:"allowedPicks,omitempty"`
+	AllowedTiles []int `json:"allowedTiles,omitempty"`
 }
 
 type PickDiceRequest struct {
